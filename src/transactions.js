@@ -14,7 +14,7 @@ import axios from "axios";
 
 export default function Transaction() {
   const [transactionsList, settransactionsList] = React.useState([]);
-  const accountId = JSON.parse(localStorage.getItem('userInformation')).accountId
+  const accountId = JSON.parse(localStorage.getItem('userInformation')).id
   React.useEffect(()=> {
     getTransactionsList()
   // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -48,7 +48,7 @@ export default function Transaction() {
                 <TableCell component="th" scope="row">
                   {row.fromAccountNumber}
                 </TableCell>
-                <TableCell align="right">{row.toAccountNumber}</TableCell>
+                <TableCell >{row.toAccountNumber}</TableCell>
                 <TableCell align="right">${row.amount}</TableCell>
               </TableRow>
             )) : <TableRow ><p>No records found</p></TableRow>}
