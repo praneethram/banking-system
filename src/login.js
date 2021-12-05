@@ -1,6 +1,8 @@
 import { Button, TextField } from "@material-ui/core";
 import React from "react";
 import { useNavigate } from 'react-router-dom';
+import axios from "axios";
+
 
 
 export default function Login(props) {
@@ -19,8 +21,19 @@ export default function Login(props) {
       }
       else {
           setError('')
-          console.log(userName,password)
-
+          axios
+          .post('https://addf-223-238-51-144.ngrok.io/user/login', {
+            userName: userName,
+            password: password
+          })
+          .then((response) => {
+            setError(response?.data?.errors[0])
+            if(response.data) {
+              localStorage.setItem('userInformation',JSON.stringify(response.data.data) )
+              window.location.reload()
+            }
+                        
+          });
       }
   }
   return(

@@ -8,48 +8,50 @@ import {
   TableCell,
   TableBody,
 } from "@material-ui/core";
+import axios from "axios";
 
-function createData(name, calories, fat, carbs, protein) {
-  return { name, calories, fat, carbs, protein };
-}
 
-const rows = [
-  createData("Frozen yoghurt", 159, 6.0, 24, 4.0),
-  createData("Ice cream sandwich", 237, 9.0, 37, 4.3),
-  createData("Eclair", 262, 16.0, 24, 6.0),
-  createData("Cupcake", 305, 3.7, 67, 4.3),
-  createData("Gingerbread", 356, 16.0, 49, 3.9),
-];
 
 export default function Transaction() {
+  const [transactionsList, settransactionsList] = React.useState([]);
+  const accountId = JSON.parse(localStorage.getItem('userInformation')).accountId
+  React.useEffect(()=> {
+    getTransactionsList()
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  },[])
+
+
+  const getTransactionsList = () => {
+           axios
+          .get(`https://addf-223-238-51-144.ngrok.io/user/account/history?userid=${accountId}`)
+          .then((response) => {
+          console.log("🚀 ~ file: transactions.js ~ line 27 ~ .then ~ response", response)
+
+            settransactionsList(response.data?.data)
+          });
+  }
+
   return (
     <div className="transactionTable">
       <TableContainer component={Paper}>
         <Table sx={{ minWidth: 650 }} aria-label="simple table">
           <TableHead>
             <TableRow>
-              <TableCell>Dessert (100g serving)</TableCell>
-              <TableCell align="right">Calories</TableCell>
-              <TableCell align="right">Fat&nbsp;(g)</TableCell>
-              <TableCell align="right">Carbs&nbsp;(g)</TableCell>
-              <TableCell align="right">Protein&nbsp;(g)</TableCell>
+              <TableCell>From Account</TableCell>
+              <TableCell >To Account</TableCell>
+              <TableCell align="right">Amount</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
-            {rows.map((row) => (
-              <TableRow
-                key={row.name}
-                sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
-              >
+            {transactionsList.length > 0 ?  transactionsList.map((row,id) => (
+              <TableRow key={id}>
                 <TableCell component="th" scope="row">
-                  {row.name}
+                  {row.fromAccountNumber}
                 </TableCell>
-                <TableCell align="right">{row.calories}</TableCell>
-                <TableCell align="right">{row.fat}</TableCell>
-                <TableCell align="right">{row.carbs}</TableCell>
-                <TableCell align="right">{row.protein}</TableCell>
+                <TableCell align="right">{row.toAccountNumber}</TableCell>
+                <TableCell align="right">${row.amount}</TableCell>
               </TableRow>
-            ))}
+            )) : <TableRow ><p>No records found</p></TableRow>}
           </TableBody>
         </Table>
       </TableContainer>

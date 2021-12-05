@@ -1,5 +1,7 @@
 import { Button, TextField } from "@material-ui/core";
 import React from "react";
+import axios from "axios";
+
 
 import { useNavigate } from "react-router-dom";
 
@@ -24,7 +26,26 @@ export default function Signup() {
       setError("enter phone");
     } else {
       setError("");
-      console.log(userName, password);
+      setuserName("");
+      setPassword("");
+      setEmail("");
+      setPhone("");
+      axios
+      .post('https://addf-223-238-51-144.ngrok.io/user', {
+        firstname: userName,
+        lastname: null,
+        email: email,
+        phone: phone,
+        password : password,
+        role: 'ACCOUNTHOLDER',
+        address1: null,
+        address2: null,
+        pincode: null,
+        gender: 'Male'
+      })
+      .then((response) => {
+        setError(response?.data?.data ? response?.data?.data : response?.data?.errors[0])
+      });
     }
   };
   return (
